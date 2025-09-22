@@ -1,6 +1,8 @@
 import { conection } from "../conection/conecxao.js";
 
 
+
+////função para criar novo usuario////
 export async function novo(novousuario) {
 const comando = `INSERT INTO usuario (nome, email, senha) VALUES (?, ?, MD5(?));`
 const [info] = await conection.query(comando,[novousuario.nome,
@@ -13,6 +15,12 @@ return info.insertId
 
 
 
+
+
+
+
+
+///função para autenticar usuario////
 export async function autenticar(email,senha) {
 const comando = `SELECT id, email, senha FROM usuario
 WHERE email = ? and senha = MD5(?)`
@@ -22,6 +30,15 @@ return info[0]
 
 
 
+
+
+
+
+
+
+
+///função para criar nova sala////
+/// Nessa função o usuario que cria a sala já tem permissão para entrar nela pois ele é o dono/a da sala///
 export async function InserirSala(NovaSala, usuario_id) {
     const comando = `
     INSERT INTO sala (nome, usuario_id)
@@ -53,22 +70,15 @@ export async function InserirSala(NovaSala, usuario_id) {
 
 
 
-export async function autorizar(sala_id,usuario_id){
-const comando =
-`UPDATE salaPermissao
-SET aprovado = TRUE
-WHERE sala_id = ?
-AND usuario_id = ?`
-
-const [info] = await conection.query(comando,[sala_id,usuario_id])
-
-return info;
-
-}
 
 
 
 
+
+
+
+
+///função para verificar se o usuario tem permissão para entrar na sala////
 export async function verificarusuario(sala_id, usuario_id) {
 
    const comando = `
@@ -99,7 +109,7 @@ else{
 
 
 
-
+///função para pedir permissão para entrar na sala////
 export async function PedirPermisão(usuario_id,sala_id){
 const comando = `INSERT INTO salaPermissao (sala_id, usuario_id, aprovado) VALUES (?, ?, FALSE);
 `
@@ -110,6 +120,43 @@ return info.insertId
 }
 
 
+
+
+
+
+
+
+
+
+
+///função para autorizar usuario a entrar na sala////
+export async function autorizar(sala_id,usuario_id){
+const comando =
+`UPDATE salaPermissao
+SET aprovado = TRUE
+WHERE sala_id = ?
+AND usuario_id = ?`
+
+const [info] = await conection.query(comando,[sala_id,usuario_id])
+
+return info;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////função para criar chat////
 export async function CriarChat(usuario_id,sala_id,mensagem,criacao){
 const comando = `INSERT INTO chat (usuario_id, sala_id, mensagem, criacao) VALUES (?, ?, ?, NOW())`
 
@@ -121,6 +168,15 @@ return info.insertId
 
 
 
+
+
+
+
+
+
+
+
+///função para listar chat////
 export async function ListarChat(sala_id){
     const comando = `SELECT chat.id,
          chat.usuario_id,
@@ -138,4 +194,3 @@ const [info] = await conection.query(comando,[sala_id])
 return info
 
 }
-

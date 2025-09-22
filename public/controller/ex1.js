@@ -4,6 +4,10 @@ import { Router } from "express";
 const endpoints = Router();
 const autendicador = getAuthentication();
 
+
+
+
+////Endpoint para criar novo usuario////
 endpoints.post('/novousuario', async (req,resp) => {
 let f = req.body
 let ff = await novo(f);
@@ -14,6 +18,8 @@ mensagem:"Usuario Cadastrado!!"
 })
 
 
+
+////Endpoint para gerar token////
 endpoints.post('/gerartoken',async(req,resp) => {
 let f = req.body.email;
 let fff = req.body.senha;
@@ -28,6 +34,7 @@ token:token
 })
 
 
+///Endpoint para criar nova sala////
 endpoints.post('/sala', autendicador, async (req, resp) => {
     const NovaSala = req.body;
     const usuario_id = req.user.id;
@@ -41,6 +48,7 @@ endpoints.post('/sala', autendicador, async (req, resp) => {
 
 
 
+////Endpoint para Verificar se o usuario tem permissão para entrar na sala////
 endpoints.get('/sala/:sala/entrar', autendicador, async (req, resp) => {
 let usuarioLogadoId = req.user.id;
 let salaId = req.params.sala;
@@ -55,7 +63,7 @@ if(!registro){
 })
 
 
-
+////Endpoint para autorizar usuario a entrar na sala////
 endpoints.post('/sala/:sala/mudar/:id_usuario', autendicador, async (req, resp) => {
     let usuarioLogadoId = req.user.id;
     let salaId = req.params.sala;
@@ -72,6 +80,7 @@ endpoints.post('/sala/:sala/mudar/:id_usuario', autendicador, async (req, resp) 
 
 
 
+////Endpoint que vai mudar o status do pedido de permissão para entrar na sala////
 endpoints.post('/sala/:sala/autorizar/:id_usuario', autendicador, async (req, resp) => {
     let usuarioLogadoId = req.user.id;
 
@@ -89,7 +98,7 @@ endpoints.post('/sala/:sala/autorizar/:id_usuario', autendicador, async (req, re
 
 
 
-
+///Endpoint para criar chat////
 endpoints.post('/chat/:sala/:usuario',autendicador, async (req,resp) => {
 let salaId = req.params.sala;
 let usuarioId = req.params.usuario;
@@ -112,6 +121,8 @@ resp.send({
  })
 
 
+
+ ////Endpoint para listar chat////
  endpoints.get('/chat/:sala',autendicador, async (req,resp) => {
     let salaId = req.params.sala;
     let usuarioLogadoId = req.user.id;
